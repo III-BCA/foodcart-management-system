@@ -2,9 +2,9 @@ name: Frontend CI/CD
 
 on:
   push:
-    paths:
-      - foodcart-ui/**
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   frontend:
@@ -19,18 +19,17 @@ jobs:
           node-version: 18
 
       - name: Install & Build
+        working-directory: foodcart-ui
         run: |
-          cd foodcart-ui
           npm install
           npm run build
 
       - name: SonarCloud Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        working-directory: foodcart-ui
         run: |
-          cd foodcart-ui
           npx sonar-scanner \
             -Dsonar.projectKey=23suca52-png_foodcart-frontend \
             -Dsonar.organization=23suca52-png \
             -Dsonar.sources=src \
-            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
