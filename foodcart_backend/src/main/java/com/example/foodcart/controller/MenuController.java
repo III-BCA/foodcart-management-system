@@ -9,7 +9,7 @@ import com.example.foodcart.repository.MenuRepository;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://foodcart-management-system-frontend.vercel.app/")
 public class MenuController {
 
     private final MenuRepository repo;

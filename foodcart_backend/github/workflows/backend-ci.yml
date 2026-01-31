@@ -1,0 +1,41 @@
+name: Backend CI/CD
+
+on:
+  push:
+    paths:
+      - backend/**
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build Backend
+        run: |
+          cd backend
+          mvn clean verify
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd backend
+          mvn sonar:sonar \
+          -Dsonar.projectKey=23suca52-png_foodcart-management-system \
+          -Dsonar.organization=Sathyadharshini N \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_TOKEN
+
+      - name: Docker Build
+        run: |
+          cd backend
+          docker build -t foodcart-backend .
