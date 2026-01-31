@@ -33,7 +33,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=23suca52-png_foodcart-backend \
+            -Dsonar.projectKey=23suca52-png_foodcart-management-system \
             -Dsonar.organization=23suca52-png \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN
