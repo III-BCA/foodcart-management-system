@@ -30,8 +30,8 @@ jobs:
         working-directory: foodcart-ui
         run: |
           npx sonar-scanner \
-            -Dsonar.projectKey=23suca52-png_foodcart-management-system \
-            -Dsonar.organization=23suca52-png \
+            -Dsonar.projectKey=III-BCA_foodcart-management-system \
+            -Dsonar.organization=III-BCA \
             -Dsonar.sources=src \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.coverage.exclusions=**/* \
