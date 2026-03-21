@@ -1,3 +1,4 @@
+
 name: Backend CI/CD
 
 on:
@@ -11,7 +12,7 @@ on:
 
 jobs:
 
-  # 🔹 PR → Sonar
+  # 🔹 PR → Sonar + Build
   sonar:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -19,6 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Setup Java
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      #  Build Backend
+      - name: Build with Maven
+        working-directory: foodcart_backend
+        run: mvn clean install
+
+      #  Sonar Scan
       - name: Sonar Scan
         working-directory: foodcart_backend
         run: |
@@ -28,7 +42,7 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN1 }}
 
-  # 🔥 MAIN → Docker + Deploy
+  #  MAIN → Docker + Deploy
   deploy:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -36,27 +50,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Docker login
+      #  Docker login
       - name: Login DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build image
+      #  Build Docker Image
       - name: Build Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/foodcart-backend:latest ./foodcart_backend
 
-      # Push image
+      # Push Image
       - name: Push Image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/foodcart-backend:latest
 
-      # Deploy to Azure
+      # Deploy to Azure Web App
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: foodcart-backend   # ⚠️ backend app name
+          app-name: foodcart-backend
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE1 }}
           images: ${{ secrets.DOCKER_USERNAME }}/foodcart-backend:latest
+```
